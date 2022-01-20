@@ -26,7 +26,7 @@
     'data': [
         'security/ir.model.access.csv',
         'views/ks_loging_setting_conf.xml',
-        # 'views/templates.xml',
+        'views/templates.xml',
         # 'views/left_login_template.xml',
         'views/template_signup.xml',
         'views/assets.xml',

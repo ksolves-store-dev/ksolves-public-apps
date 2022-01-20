@@ -7,14 +7,10 @@
     </template>
 
     <template id="ks_signup" inherit_id="auth_signup.signup" primary="True">
-
+        <xpath expr="//t[@t-call='auth_signup.fields']" position="replace">
+            <t t-call="ks_login.x_fields">
+                <t t-set="only_passwords" t-value="bool(token and not invalid_token)"/>
+            </t>
+        </xpath>
     </template>
-
-<!--    <template id="assets_login" inherit_id="web.assets_frontend">-->
-<!--   	 	<xpath expr="." position="inside" >-->
-<!--   	 		<link rel="stylesheet" href="/ks_login/static/src/css/web_login_style.css"/>-->
-<!--   	 	</xpath>-->
-<!--    </template>-->
-
-
 </odoo>
