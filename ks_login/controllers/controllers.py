@@ -19,7 +19,9 @@ class KsAuthSignupHome(AuthSignupHome):
     @http.route('/web/signup', type='http', auth='public', website=True, sitemap=False)
     def web_auth_signup(self, *args, **kw):
         sup = super(KsAuthSignupHome, self).web_auth_signup(*args, **kw)
-        # sup.qcontext['fields_xml'] = request.env.ref("")
+        vals = request.website
+        record = request.env['ks_login.setting.conf'].search([('ks_website_id', '=', vals.id), ('ks_is_active', '=', True)]).ks_template.key
+        sup.qcontext['fields_xml'] = request.env.ref(record)
         response = request.render('ks_login.ks_signup', sup.qcontext)
         response.headers['X-Frame-Options'] = 'DENY'
         return response

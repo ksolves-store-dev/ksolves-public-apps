@@ -1,25 +1,25 @@
 <odoo>
-  <data>
+<!--  <data>-->
     <!-- explicit list view definition -->
 
-    <record model="ir.ui.view" id="ks_login.form">
-      <field name="name">ks_dynamic form</field>
-      <field name="model">ks_login.dynamic.fields</field>
-      <field name="arch" type="xml">
-        <form>
-          <group>
-            <group>
-              <field name="ks_technical_name"/>
-              <field name="ks_type"/>
-            </group>
-            <group>
-              <field name="ks_label"/>
-              <field name="ks_model"/>
-              <field name="ks_cr_model_id" invisible="1"/>
-            </group>
-          </group>
-        </form>
-      </field>
-    </record>
-  </data>
+<!--    <record model="ir.ui.view" id="ks_login.form">-->
+<!--      <field name="name">ks_dynamic form</field>-->
+<!--      <field name="model">ks_login.dynamic.fields</field>-->
+<!--      <field name="arch" type="xml">-->
+<!--        <form>-->
+<!--          <group>-->
+<!--            <group>-->
+<!--              <field name="ks_technical_name"/>-->
+<!--              <field name="ks_type"/>-->
+<!--            </group>-->
+<!--            <group>-->
+<!--              <field name="ks_label"/>-->
+<!--              <field name="ks_model"/>-->
+<!--              <field name="ks_cr_model_id" invisible="1"/>-->
+<!--            </group>-->
+<!--          </group>-->
+<!--        </form>-->
+<!--      </field>-->
+<!--    </record>-->
+<!--  </data>-->
 </odoo>

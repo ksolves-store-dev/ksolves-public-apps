@@ -30,11 +30,12 @@
             <group>
               <group>
                 <field name="ks_website_id"
-                options="{'no_open':True,'no_create':1,'no_create_edit':1}" widget="many2many_tags"/>
+                options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
               </group>
               <group>
                 <group>
                   <field name="ks_is_active"/>
+                  <field name="ks_template"/>
                 </group>
                 <group></group>
               </group>

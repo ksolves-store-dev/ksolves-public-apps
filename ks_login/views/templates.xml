@@ -7,10 +7,15 @@
     </template>
 
     <template id="ks_signup" inherit_id="auth_signup.signup" primary="True">
-        <xpath expr="//t[@t-call='auth_signup.fields']" position="replace">
-            <t t-call="ks_login.x_fields">
-                <t t-set="only_passwords" t-value="bool(token and not invalid_token)"/>
+        <xpath expr="//t[@t-call='auth_signup.fields']" position="after">
+                    <t t-call="{{fields_xml}}">
+<!--                <t t-set="only_passwords" t-value="bool(token and not invalid_token)"/>-->
             </t>
         </xpath>
     </template>
+
+<!--    <template id="x_fields" name="dynamice field add">-->
+
+<!--                        <t t-set="only_passwords" t-value="bool(token and not invalid_token)"/>-->
+<!--    </template>-->
 </odoo>
