@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api, _
-from odoo.tools.translate import html_translate
 from odoo.exceptions import ValidationError
+from odoo.tools.translate import html_translate
 
 
 class KsLogin(models.Model):
@@ -23,13 +23,13 @@ class KsLogin(models.Model):
     @api.model
     def default_get(self, vals_list):
         record = super(KsLogin, self).default_get(vals_list)
-        sup = self.env['res.config.settings'].search([])
+        sup = self.env['res.config.settings'].sudo().search([])
         record['ks_website_id'] = sup.website_id
         return record
 
     @api.constrains('ks_is_active')
     def ks_active(self):
-        ks_record = self.env['ks_login.setting.conf'].search([('id', '!=', self.id)])
+        ks_record = self.env['ks_login.setting.conf'].sudo().search([('id', '!=', self.id)])
         for rec in ks_record:
             if self.ks_is_active == True and rec.ks_website_id.id == self.ks_website_id.id and rec.ks_is_active == True:
                 raise ValidationError(_('Please inactive other record with same website'))
@@ -40,34 +40,31 @@ class KsLogin(models.Model):
         print('======================create')
         res = super(KsLogin, self).create(vals)
         if res.ks_fields_ids.ids:
-            template = self.ks_update_template_fields()
+            template = res.ks_update_template_fields()
             res['ks_template'] = template.id
         return res
 
     def write(self, vals):
-        for rec in self:
-            if 'ks_template' in vals:
-                    arch = """
-                    <div>
-                    <span>text ----</span>>
-                    </div>
-                    """
-                    rec.ks_template.arch = arch
         res = super(KsLogin, self).write(vals)
+        for rec in self:
+            if 'ks_template' not in vals:
+                self.ks_update_template_fields(ks_template_id=rec['ks_template'])
         return res
 
 
 
 
-    def ks_update_template_fields(self):
+    def ks_update_template_fields(self, ks_template_id=False):
         tem_fields = []
-        ks_conf_id = self.env['ks_login.setting.conf'].search([('ks_is_active', '=', True)], limit=1)
-        if ks_conf_id:
-            for rec in ks_conf_id.ks_fields_ids:
-                print('rec--------', rec)
-                ks_field_label = rec.ks_field_label
+        ks_custom_ids = self.env['ir.ui.view'].sudo().search([('key', 'ilike', 'ks_login.ks_custom_layout_temp_')])
+        # ks_conf_id = self.env['ks_login.setting.conf'].search([('ks_is_active', '=', True)], limit=1)
+        if self.ks_fields_ids:
+            temp = ''
+            for rec in self.ks_fields_ids:
+                ks_field_label = rec.ks_field_id.field_description
+                ks_field_name = rec.ks_field_id.name
                 ks_field_group_str = rec.ks_field_label.split(' ')
-                print('ks_field_label-----','ks_field_group_str---', ks_field_group_str, ks_field_label)
+                ks_field_type = rec.ks_field_type
                 ks_group = ''
                 for ks_group_str in ks_field_group_str:
                     ks_group = ks_group +ks_group_str
@@ -77,29 +74,32 @@ class KsLogin(models.Model):
                 if rec.ks_placeholder:
                     ks_placeholder = rec.ks_placeholder
                 else:
-                    ks_placeholder =""
+                    ks_placeholder = ks_field_label
                 print('ks_placeholder------', ks_placeholder)
-        ks_custom_ids = self.env['ir.ui.view'].search([('key', 'ilike', 'ks_login.ks_custom_layout_temp_')])
-        if not ks_custom_ids.ids:
-            key = 'ks_login.ks_custom_layout_temp_'
-            name = 'layout_template_'
-        else:
-            key = 'ks_login.ks_custom_layout_temp_' + str(len(ks_custom_ids.ids))
-            name = 'layout_template_' + str(len(ks_custom_ids.ids))
-        ks_temp = self.env['ir.ui.view'].sudo().create({
-            'name': name,
-            'key': key,
-            'type': 'qweb',
-            'arch':
-                """
-                <div class=""" + """ "form-group """ + ks_field_group + """ ">\n""" \
-                                 +"""       \t<label for= """+""" " """ + ks_group +""" " """ +"""class ="col-form-label">""" + ks_field_label + """</label>\n""" \
-                                 +"""       <input type="text" """ + """placeholder="""+""" " """ +ks_placeholder+""" " """+ """name="""+ """ " """+ks_group+ """ " """ + """t-att-value="""+""" " """+ks_group+""" " """ +"""id="""+""" " """+ks_group+""" " """ +"""class="form-control form-control-sm" required="required" autofocus="autofocus" autocapitalize="off"/>\n""" \
-                                 +"""    </div>\n
-                """
+                temp += """       <label for= """ + """ " """ + ks_field_name + """ " """ + """class ="col-form-label">""" + ks_field_label + """</label>\n""" \
+                + """       <input type=""" + """ " """ + ks_field_type + """ " """+ """placeholder=""" + """ " """ + ks_placeholder + """ " """ + """name=""" + """ " """ + ks_field_name + """ " """ + """t-att-value=""" + """ " """ + ks_field_name + """ " """ + """id=""" + """ " """ + ks_field_name + """ " """ + """class="form-control form-control-sm" required="required" autofocus="autofocus" autocapitalize="off"/>\n"""
 
-        })
-        return ks_temp
+
+
+                # ks_rec = list_val.append(temp)
+            if not ks_custom_ids.ids:
+                key = 'ks_login.ks_custom_layout_temp_'
+                name = 'layout_template_'
+            else:
+                key = 'ks_login.ks_custom_layout_temp_' + str(len(ks_custom_ids.ids))
+                name = 'layout_template_' + str(len(ks_custom_ids.ids))
+            arch = "<div class='form-group'>" + temp + "</div>"
+            if ks_template_id:
+                ks_template_id.arch = arch
+                ks_temp = ks_template_id
+            else:
+                ks_temp = self.env['ir.ui.view'].sudo().create({
+                    'name': name,
+                    'key': key,
+                    'type': 'qweb',
+                    'arch': arch
+                })
+            return ks_temp
 
 
 
@@ -135,12 +135,12 @@ class KsLogin(models.Model):
         #
         #
         #
-        #     #     temp_str_starting = """<xpath expr="//t[1]/div[2]/input[1]" position="after">\n"""
+                # temp_str_starting = """<xpath expr="//t[1]/div[2]/input[1]" position="after">\n"""
         #     #     temp_str_ending = """</xpath>"""
-        #     #     temp_str_fields = """    <div class=""" + """ "form-group """ + ks_field_group + """ ">\n""" \
-        #     #                      +"""       \t<label for= """+""" " """ + ks_group +""" " """ +"""class ="col-form-label">""" + ks_field_label + """</label>\n""" \
-        #     #                      +"""       <input type="text" """ + """placeholder="""+""" " """ +ks_placeholder+""" " """+ """name="""+ """ " """+ks_group+ """ " """ + """t-att-value="""+""" " """+ks_group+""" " """ +"""id="""+""" " """+ks_group+""" " """ +"""class="form-control form-control-sm" required="required" autofocus="autofocus" autocapitalize="off"/>\n""" \
-        #     #                      +"""    </div>\n"""
+        #         temp_str_fields = """    <div class=""" + """ "form-group """ + ks_field_group + """ ">\n""" \
+        #                          +"""       \t<label for= """+""" " """ + ks_group +""" " """ +"""class ="col-form-label">""" + ks_field_label + """</label>\n""" \
+        #                          +"""       <input type="text" """ + """placeholder="""+""" " """ +ks_placeholder+""" " """+ """name="""+ """ " """+ks_group+ """ " """ + """t-att-value="""+""" " """+ks_group+""" " """ +"""id="""+""" " """+ks_group+""" " """ +"""class="form-control form-control-sm" required="required" autofocus="autofocus" autocapitalize="off"/>\n""" \
+        #                          +"""    </div>\n"""
         #     #     tem_fields.append(temp_str_fields)
         #     # ks_template_sign_up = self.env.ref('ks_login.signup_fields')
         #     # custom_fields = ""
