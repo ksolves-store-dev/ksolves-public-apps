@@ -75,11 +75,17 @@ class KsLogin(models.Model):
                     ks_placeholder = rec.ks_placeholder
                 else:
                     ks_placeholder = ks_field_label
-                print('ks_placeholder------', ks_placeholder)
-                temp += """       <label for= """ + """ " """ + ks_field_name + """ " """ + """class ="col-form-label">""" + ks_field_label + """</label>\n""" \
-                + """       <input type=""" + """ " """ + ks_field_type + """ " """+ """placeholder=""" + """ " """ + ks_placeholder + """ " """ + """name=""" + """ " """ + ks_field_name + """ " """ + """t-att-value=""" + """ " """ + ks_field_name + """ " """ + """id=""" + """ " """ + ks_field_name + """ " """ + """class="form-control form-control-sm" required="required" autofocus="autofocus" autocapitalize="off"/>\n"""
-
-
+                if ks_field_type == 'many2one':
+                    ks_field_relation = rec.ks_field_id.relation
+                    ks_many_2_one_ids = self.env[ks_field_relation].sudo().search([])
+                    ks_many2_one_arch = ''
+                    for many_val in ks_many_2_one_ids:
+                        ks_many2_one_arch += "<option t-att-value={} ><t t-esc={}></option>".format(many_val.id, many_val.name)
+                    # arch_new = "<label for={} class ={}></label><select name={} placeholder={} t-attf-class='form-control form-control-sm' required='required' autofocus='autofocus' autocapitalize='off'><option value=''>{}</option>".format(ks_field_name, ks_field_label, ks_field_name, ks_placeholder, ks_field_label)
+                    temp = "<select> " + ks_many2_one_arch + "</select>\n"
+                else:
+                    temp += """       <label for= """ + """ " """ + ks_field_name + """ " """ + """class ="col-form-label">""" + ks_field_label + """</label>\n""" \
+                            + """       <input type=""" + """ " """ + ks_field_type + """ " """ + """placeholder=""" + """ " """ + ks_placeholder + """ " """ + """name=""" + """ " """ + ks_field_name + """ " """ + """t-att-value=""" + """ " """ + ks_field_name + """ " """ + """id=""" + """ " """ + ks_field_name + """ " """ + """class="form-control form-control-sm" required="required" autofocus="autofocus" autocapitalize="off"/>\n"""
 
                 # ks_rec = list_val.append(temp)
             if not ks_custom_ids.ids:

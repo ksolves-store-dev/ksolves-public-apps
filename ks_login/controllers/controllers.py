@@ -15,6 +15,15 @@ from openerp.http import request
 
 class KsAuthSignupHome(AuthSignupHome):
 
+    # @http.route('/web/login', type='http', auth="none")
+    # def web_login(self, redirect=None, **kw):
+    #     sup = super(KsAuthSignupHome, self).web_login(redirect=None, **kw)
+    #     response = request.render('ks_login.login', sup.values)
+    #     response.headers['X-Frame-Options'] = 'DENY'
+    #     return response
+
+
+
     @http.route('/web/signup', type='http', auth='public', website=True, sitemap=False)
     def web_auth_signup(self, *args, **kw):
         sup = super(KsAuthSignupHome, self).web_auth_signup(*args, **kw)
