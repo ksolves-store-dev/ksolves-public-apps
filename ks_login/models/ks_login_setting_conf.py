@@ -80,15 +80,67 @@ class KsLogin(models.Model):
                     ks_many_2_one_ids = self.env[ks_field_relation].sudo().search([])
                     ks_many2_one_arch = ''
                     for many_val in ks_many_2_one_ids:
-                        ks_many2_one_arch += "<option t-att-value='{}'><span>{}</span></option>".format(many_val.id, many_val.name)
+                        ks_many2_one_arch += "<option t-att-value=' " + str(many_val.id) + " '>\n" \
+                                             + "<span>" + many_val.name + "</span>\n" \
+                                             + "</option>\n"
                     temp += "<label for='{}' class ='col-form-label'>{}</label><select name='{}' placeholder='{}' class='form-control form-control-sm' required='required' autofocus='autofocus' autocapitalize='off'><option value=''>{}</option>".format(ks_field_name, ks_field_label, ks_field_name, ks_placeholder, ks_field_label) + ks_many2_one_arch + "</select>\n"
-                if ks_field_type == 'selection':
-                    ks_field_selection = rec.ks_field_id.selection_ids
-                    # for ks_select in ks_field_selection
+                elif ks_field_type == 'selection':
+                    ks_field_selection = dict(self.env[rec.ks_field_id.model].fields_get(allfields=[rec.ks_field_id.name])[rec.ks_field_id.name]['selection'])
+                    ks_selection_list = ks_field_selection.values()
+                    ks_selection_val = ''
+                    for ks_select in ks_selection_list:
+                        ks_selection_val += "<option t-att-value=' " + str(ks_select) + " '>\n" \
+                                             + "<span>" + ks_select + "</span>\n" \
+                                             + "</option>\n"
+                    temp += "<label for='{}' class ='col-form-label'>{}</label><select name='{}' placeholder='{}' class='form-control form-control-sm' required='required' autofocus='autofocus' autocapitalize='off'><option value=''>{}</option>".format(ks_field_name, ks_field_label, ks_field_name, ks_placeholder, ks_field_label) + ks_selection_val + "</select>\n"
 
+                # if ks_field_type == 'many2one':
+                #     ks_field_relation = rec.ks_field_id.relation
+                #     ks_many_2_one_ids = self.env[ks_field_relation].sudo().search([])
+                #     ks_many2_one_arch = ''
+                #     for many_val in ks_many_2_one_ids:
+                #         ks_many2_one_arch += "<option t-att-value='{}'><span>{}</span></option>".format(many_val.id, many_val.name)
+                #     temp += "<label for='{}' class ='col-form-label'>{}</label><select name='{}' placeholder='{}' class='form-control form-control-sm' required='required' autofocus='autofocus' autocapitalize='off'><option value=''>{}</option>".format(ks_field_name, ks_field_label, ks_field_name, ks_placeholder, ks_field_label) + ks_many2_one_arch + "</select>\n"
+                # elif ks_field_type == 'many2many':
+                #     ks_field_many = rec.ks_field_id.relation
+                #     ks_rec_many2many_ids = self.env[ks_field_many].sudo().search([])
+                #     ks_many2_many_arch = ''
+                #     for ks_many_val in ks_rec_many2many_ids:
+                #         ks_many2_many_arch += "<option t-att-value='{}'><span>{}</span></option>".format(ks_many_val.id, ks_many_val.name)
+                #     temp += "<label for='{}' class ='col-form-label'>{}</label><select name='{}' placeholder='{}' class='form-control form-control-sm' required='required' autofocus='autofocus' autocapitalize='off'><option value=''>{}</option>".format(ks_field_name, ks_field_label, ks_field_name, ks_placeholder, ks_field_label) + ks_many2_many_arch + "</select>\n"
+                #
+                #
+                #
+                #
+                #
+                #
+                # elif ks_field_type == 'selection':
+                #     ks_field_selection = dict(self.env[rec.ks_field_id.model].fields_get(allfields=[rec.ks_field_id.name])[rec.ks_field_id.name]['selection'])
+                #     ks_selection_list = ks_field_selection.values()
+                #     ks_selection_val = ''
+                #     for ks_select in ks_selection_list:
+                #         ks_selection_val += "<option t-att-value='{}'><span>{}</span></option>".format(ks_select, ks_select)
+                #     temp += "<label for='{}' class ='col-form-label'>{}</label><select name='{}' placeholder='{}' class='form-control form-control-sm' required='required' autofocus='autofocus' autocapitalize='off'><option value=''>{}</option>".format(ks_field_name, ks_field_label, ks_field_name, ks_placeholder, ks_field_label) + ks_selection_val + "</select>\n"
+                elif ks_field_type == 'integer':
+                    temp += """       <label for= """ + """ " """ + ks_field_name + """ " """ + """class ="col-form-label">""" + ks_field_label + """</label>\n""" \
+                            + """       <input type="number" """ + """placeholder=""" + """ " """ + ks_placeholder + """ " """ + """name=""" + """ " """ + ks_field_name + """ " """ + """t-att-value=""" + """ " """ + ks_field_name + """ " """ + """id=""" + """ " """ + ks_field_name + """ " """ + """class="form-control form-control-sm" required="required" autofocus="autofocus" autocapitalize="off"/>\n"""
+                elif ks_field_type == 'boolean':
+                    temp += """       <label for= """ + """ " """ + ks_field_name + """ " """ + """class ="col-form-label">""" + ks_field_label + """</label>\n""" \
+                            + """       <input type="boolean" """ + """placeholder=""" + """ " """ + ks_placeholder + """ " """ + """name=""" + """ " """ + ks_field_name + """ " """ + """t-att-value=""" + """ " """ + ks_field_name + """ " """ + """id=""" + """ " """ + ks_field_name + """ " """ + """class="form-control form-control-sm" required="required" autofocus="autofocus" autocapitalize="off"/>\n"""
+                elif ks_field_type == 'char':
+                    temp += """       <label for= """ + """ " """ + ks_field_name + """ " """ + """class ="col-form-label">""" + ks_field_label + """</label>\n""" \
+                            + """       <input type="text" """ + """placeholder=""" + """ " """ + ks_placeholder + """ " """ + """name=""" + """ " """ + ks_field_name + """ " """ + """t-att-value=""" + """ " """ + ks_field_name + """ " """ + """id=""" + """ " """ + ks_field_name + """ " """ + """class="form-control form-control-sm" required="required" autofocus="autofocus" autocapitalize="off"/>\n"""
+                elif ks_field_type == 'date':
+                    temp += """       <label for= """ + """ " """ + ks_field_name + """ " """ + """class ="col-form-label">""" + ks_field_label + """</label>\n""" \
+                            + """       <input type="date" """ + """placeholder=""" + """ " """ + ks_placeholder + """ " """ + """name=""" + """ " """ + ks_field_name + """ " """ + """t-att-value=""" + """ " """ + ks_field_name + """ " """ + """id=""" + """ " """ + ks_field_name + """ " """ + """class="form-control form-control-sm" required="required" autofocus="autofocus" autocapitalize="off"/>\n"""
+                elif ks_field_type == 'float':
+                    temp += """       <label for= """ + """ " """ + ks_field_name + """ " """ + """class ="col-form-label">""" + ks_field_label + """</label>\n""" \
+                            + """       <input type="number" """ + """placeholder=""" + """ " """ + ks_placeholder + """ " """ + """name=""" + """ " """ + ks_field_name + """ " """ + """t-att-value=""" + """ " """ + ks_field_name + """ " """ + """id=""" + """ " """ + ks_field_name + """ " """ + """class="form-control form-control-sm" required="required" autofocus="autofocus" autocapitalize="off"/>\n"""
                 else:
                     temp += """       <label for= """ + """ " """ + ks_field_name + """ " """ + """class ="col-form-label">""" + ks_field_label + """</label>\n""" \
                             + """       <input type=""" + """ " """ + ks_field_type + """ " """ + """placeholder=""" + """ " """ + ks_placeholder + """ " """ + """name=""" + """ " """ + ks_field_name + """ " """ + """t-att-value=""" + """ " """ + ks_field_name + """ " """ + """id=""" + """ " """ + ks_field_name + """ " """ + """class="form-control form-control-sm" required="required" autofocus="autofocus" autocapitalize="off"/>\n"""
+
+
 
                 # ks_rec = list_val.append(temp)
             if not ks_custom_ids.ids:
@@ -113,37 +165,6 @@ class KsLogin(models.Model):
 
 
 
-
-
-        # tem_fields = []
-        # ks_conf_id = self.env['ks_login.setting.conf'].search([('ks_is_active', '=', True)], limit=1)
-        # if ks_conf_id:
-        #     for rec in ks_conf_id.ks_fields_ids:
-        #         print('rec--------', rec)
-        #         ks_field_label = rec.ks_field_label
-        #         ks_field_group_str = rec.ks_field_label.split(' ')
-        #         print('ks_field_label-----','ks_field_group_str---', ks_field_group_str, ks_field_label)
-        #         ks_group = ''
-        #         for ks_group_str in ks_field_group_str:
-        #             ks_group = ks_group +ks_group_str
-        #             print('ks_group', ks_group)
-        #         ks_field_group = "field-"+ks_group
-        #         print('ks_field_group--------', ks_field_group)
-        #         if rec.ks_placeholder:
-        #             ks_placeholder = rec.ks_placeholder
-        #         else:
-        #             ks_placeholder =""
-        #         print('ks_placeholder------', ks_placeholder)
-
-        #
-        #
-        #
-        #
-        #
-        #
-        #
-        #
-        #
                 # temp_str_starting = """<xpath expr="//t[1]/div[2]/input[1]" position="after">\n"""
         #     #     temp_str_ending = """</xpath>"""
         #         temp_str_fields = """    <div class=""" + """ "form-group """ + ks_field_group + """ ">\n""" \
