@@ -1,0 +1,11 @@
+<odoo>
+    <template id="ks_login_image_layout" inherit_id="web.login_layout" name="Background Login Layout">
+        <xpath expr="//t[@t-set='body_classname']" position="attributes">
+            <attribute name="t-value" add="ks_login_image_layout" separator=" "/>
+        </xpath>
+
+<!--        <xpath expr="//body" position="attributes">-->
+<!--            <attribute name="t-value">'ks_login_image_layout'</attribute>-->
+<!--        </xpath>-->
+    </template>
+</odoo>

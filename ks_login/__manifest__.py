@@ -20,7 +20,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','website'],
+    'depends': ['base', 'web', 'website'],
 
     # always loaded
     'data': [
@@ -30,11 +30,16 @@
         # 'views/left_login_template.xml',
         'views/template_signup.xml',
         'views/assets.xml',
-        'views/ks_signin_templates.xml',
+        # 'views/ks_signin_templates.xml',
 
     ],
     # only loaded in demonstration mode
     'demo': [
         'demo/demo.xml',
     ],
+    'qweb': [
+        'static/src/xml/ks_background_template.xml',
+
+
+    ]
 }

@@ -29,25 +29,25 @@ class KsAuthSignupHome(AuthSignupHome):
     def login_background(self, **post):
         ks_background = ''
         user = request.env.user
-        bg_image = request.env['ir.config_parameter'].sudo().get_param('login_bg_image')
-        login_style = request.env['ir.config_parameter'].sudo().get_param('ks_login_styles')
+        bg_image = request.env['ks_login.setting.conf'].sudo().search([('ks_is_active', '=', True)], limit=1).ks_backgroud_img
         if bg_image:
             image = base64.b64decode(bg_image)
         else:
-            if login_style == 'login_style_1' or login_style == 'login_style_3' or login_style == 'login_style_6':
-                ks_background = '/../ks_theme_kernel/static/src/images/login_bg.jpg'
-            elif login_style == 'login_style_2':
-                ks_background = '/../ks_theme_kernel/static/src/images/login-img-2.png'
-            elif login_style == 'login_style_4':
-                ks_background = '/../ks_theme_kernel/static/src/images/login-img-4.png'
-            elif login_style == 'login_style_5':
-                ks_background = '/../ks_theme_kernel/static/src/images/login-img-3.jpg'
             return redirect(ks_background)
         return request.make_response(
             image, [('Content-Type', 'image')])
 
 
 
+    @http.route('/web/signup', type='http', auth='public', website=True, sitemap=False)
+    def web_auth_signup(self, *args, **kw):
+        sup = super(KsAuthSignupHome, self).web_auth_signup(*args, **kw)
+        vals = request.website
+        record = request.env['ks_login.setting.conf'].search([('ks_website_id', '=', vals.id)]).ks_template.key
+        sup.qcontext['fields_xml'] = record
+        response = request.render('ks_login.ks_signup', sup.qcontext)
+        response.headers['X-Frame-Options'] = 'DENY'
+        return response
 
 
 

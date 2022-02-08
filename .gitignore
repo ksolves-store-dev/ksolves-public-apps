@@ -128,3 +128,4 @@ dmypy.json
 # Pyre type checker
 .pyre/
 .idea
+.gitignore assets.xml, web_login_style.css, ks_login_bg.scss
