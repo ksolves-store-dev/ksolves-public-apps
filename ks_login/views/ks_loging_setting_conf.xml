@@ -70,7 +70,7 @@
                 <group>
                   <group>
                     <field name="ks_checkbox" widget="radio"/>
-                    <field name="ks_backgroud_img" widget="image" class="oe_avatar" attrs="{'invisible':[('ks_checkbox','=','none')]}"/>
+                    <field name="ks_background_img" widget="image" class="oe_avatar" attrs="{'invisible':[('ks_checkbox','=','none')]}"/>
                   </group>
                   <group>
                   </group>

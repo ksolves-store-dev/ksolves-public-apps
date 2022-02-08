@@ -29,7 +29,19 @@ class KsAuthSignupHome(AuthSignupHome):
     def login_background(self, **post):
         ks_background = ''
         user = request.env.user
-        bg_image = request.env['ks_login.setting.conf'].sudo().search([('ks_is_active', '=', True)], limit=1).ks_backgroud_img
+        bg_image = request.env['ks_login.setting.conf'].sudo().search([('ks_is_active', '=', True)], limit=1).ks_background_img
+        if bg_image:
+            image = base64.b64decode(bg_image)
+        else:
+            return redirect(ks_background)
+        return request.make_response(
+            image, [('Content-Type', 'image')])
+
+    @route(['/signup_page/background'], type='http', auth="none")
+    def signup_background(self, **post):
+        ks_background = ''
+        user = request.env.user
+        bg_image = request.env['ks_login.setting.conf'].sudo().search([('ks_is_active', '=', True)], limit=1).ks_background_img
         if bg_image:
             image = base64.b64decode(bg_image)
         else:
@@ -43,7 +55,7 @@ class KsAuthSignupHome(AuthSignupHome):
     def web_auth_signup(self, *args, **kw):
         sup = super(KsAuthSignupHome, self).web_auth_signup(*args, **kw)
         vals = request.website
-        record = request.env['ks_login.setting.conf'].search([('ks_website_id', '=', vals.id)]).ks_template.key
+        record = request.env['ks_login.setting.conf'].sudo().search([('ks_website_id', '=', vals.id)]).ks_template.key
         sup.qcontext['fields_xml'] = record
         response = request.render('ks_login.ks_signup', sup.qcontext)
         response.headers['X-Frame-Options'] = 'DENY'

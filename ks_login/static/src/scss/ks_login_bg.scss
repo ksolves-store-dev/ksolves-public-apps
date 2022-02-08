@@ -1,3 +1,21 @@
 .ks_login_image_layout {
     background-image: url("/login_page/background");
+    background-repeat: no-repeat;
+	background-position: center center;
+	background-attachment: fixed;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+}
+
+.o_connected_userks_login_image_layout {
+    background-image: url("/signup_page/background");
+    background-repeat: no-repeat;
+	background-position: center center;
+	background-attachment: fixed;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
 }

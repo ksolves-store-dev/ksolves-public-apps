@@ -30,6 +30,7 @@
         # 'views/left_login_template.xml',
         'views/template_signup.xml',
         'views/assets.xml',
+        'static/src/xml/ks_background_template.xml',
         # 'views/ks_signin_templates.xml',
 
     ],
@@ -38,7 +39,7 @@
         'demo/demo.xml',
     ],
     'qweb': [
-        'static/src/xml/ks_background_template.xml',
+
 
 
     ]

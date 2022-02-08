@@ -14,10 +14,10 @@ class KsLogin(models.Model):
                                     string="Login Fields")
     ks_checkbox = fields.Selection([('image','Image'),('none','None')],'Image', default='none')
     ks_is_active = fields.Boolean("Active", default = False, required=True)
-    ks_backgroud_img = fields.Binary("Background Image")
+    ks_background_img = fields.Binary("Background Image")
     ks_signup_content = fields.Html('Signup Content', translate=html_translate)
-    ks_login_content =  fields.Html('Login Content', translate=html_translate)
-    ks_pw_reset_content =  fields.Html('Reset Password Content', translate=html_translate)
+    ks_login_content = fields.Html('Login Content', translate=html_translate)
+    ks_pw_reset_content = fields.Html('Reset Password Content', translate=html_translate)
     ks_template = fields.Many2one('ir.ui.view', readonly=True)
 
     @api.model
@@ -80,7 +80,7 @@ class KsLogin(models.Model):
                     ks_many_2_one_ids = self.env[ks_field_relation].sudo().search([])
                     ks_many2_one_arch = ''
                     for many_val in ks_many_2_one_ids:
-                        ks_many2_one_arch += "<option t-att-value=' " + str(many_val.id) + " '>\n" \
+                        ks_many2_one_arch += "<option t-att-value=' " + str(many_val.ids) + " '>\n" \
                                              + "<span>" + many_val.name + "</span>\n" \
                                              + "</option>\n"
                     temp += "<label for='{}' class ='col-form-label'>{}</label><select name='{}' placeholder='{}' class='form-control form-control-sm' required='required' autofocus='autofocus' autocapitalize='off'><option value=''>{}</option>".format(ks_field_name, ks_field_label, ks_field_name, ks_placeholder, ks_field_label) + ks_many2_one_arch + "</select>\n"
@@ -101,14 +101,16 @@ class KsLogin(models.Model):
                 #     for many_val in ks_many_2_one_ids:
                 #         ks_many2_one_arch += "<option t-att-value='{}'><span>{}</span></option>".format(many_val.id, many_val.name)
                 #     temp += "<label for='{}' class ='col-form-label'>{}</label><select name='{}' placeholder='{}' class='form-control form-control-sm' required='required' autofocus='autofocus' autocapitalize='off'><option value=''>{}</option>".format(ks_field_name, ks_field_label, ks_field_name, ks_placeholder, ks_field_label) + ks_many2_one_arch + "</select>\n"
-                # elif ks_field_type == 'many2many':
-                #     ks_field_many = rec.ks_field_id.relation
-                #     ks_rec_many2many_ids = self.env[ks_field_many].sudo().search([])
-                #     ks_many2_many_arch = ''
-                #     for ks_many_val in ks_rec_many2many_ids:
-                #         ks_many2_many_arch += "<option t-att-value='{}'><span>{}</span></option>".format(ks_many_val.id, ks_many_val.name)
-                #     temp += "<label for='{}' class ='col-form-label'>{}</label><select name='{}' placeholder='{}' class='form-control form-control-sm' required='required' autofocus='autofocus' autocapitalize='off'><option value=''>{}</option>".format(ks_field_name, ks_field_label, ks_field_name, ks_placeholder, ks_field_label) + ks_many2_many_arch + "</select>\n"
-                #
+                elif ks_field_type == 'many2many':
+                    ks_field_many = rec.ks_field_id.relation
+                    ks_rec_many2many_ids = self.env[ks_field_many].sudo().search([])
+                    ks_many2_many_arch = ''
+                    for ks_many_val in ks_rec_many2many_ids:
+                        ks_many2_many_arch += "<option t-att-value=' " + str(ks_many_val.ids) + " '>\n" \
+                                             + "<span>" + ks_many_val.name + "</span>\n" \
+                                             + "</option>\n"
+                    temp += "<label for='{}' class ='col-form-label'>{}</label><select name='{}' placeholder='{}' class='form-control form-control-sm' required='required' autofocus='autofocus' autocapitalize='off'><option value=''>{}</option>".format(ks_field_name, ks_field_label, ks_field_name, ks_placeholder, ks_field_label) + ks_many2_many_arch + "</select>\n"
+
                 #
                 #
                 #
@@ -125,8 +127,7 @@ class KsLogin(models.Model):
                     temp += """       <label for= """ + """ " """ + ks_field_name + """ " """ + """class ="col-form-label">""" + ks_field_label + """</label>\n""" \
                             + """       <input type="number" """ + """placeholder=""" + """ " """ + ks_placeholder + """ " """ + """name=""" + """ " """ + ks_field_name + """ " """ + """t-att-value=""" + """ " """ + ks_field_name + """ " """ + """id=""" + """ " """ + ks_field_name + """ " """ + """class="form-control form-control-sm" required="required" autofocus="autofocus" autocapitalize="off"/>\n"""
                 elif ks_field_type == 'boolean':
-                    temp += """       <label for= """ + """ " """ + ks_field_name + """ " """ + """class ="col-form-label">""" + ks_field_label + """</label>\n""" \
-                            + """       <input type="boolean" """ + """placeholder=""" + """ " """ + ks_placeholder + """ " """ + """name=""" + """ " """ + ks_field_name + """ " """ + """t-att-value=""" + """ " """ + ks_field_name + """ " """ + """id=""" + """ " """ + ks_field_name + """ " """ + """class="form-control form-control-sm" required="required" autofocus="autofocus" autocapitalize="off"/>\n"""
+                    temp += "<label for='{}' class ='col-form-label'>{}</label><input type='checkbox' placeholder='{}' class='custom-control custom-checkbox o_field_boolean o_field_widget' required='required' autofocus='autofocus' autocapitalize='off'>".format(ks_field_name, ks_field_label, ks_placeholder) + "</input>\n"
                 elif ks_field_type == 'char':
                     temp += """       <label for= """ + """ " """ + ks_field_name + """ " """ + """class ="col-form-label">""" + ks_field_label + """</label>\n""" \
                             + """       <input type="text" """ + """placeholder=""" + """ " """ + ks_placeholder + """ " """ + """name=""" + """ " """ + ks_field_name + """ " """ + """t-att-value=""" + """ " """ + ks_field_name + """ " """ + """id=""" + """ " """ + ks_field_name + """ " """ + """class="form-control form-control-sm" required="required" autofocus="autofocus" autocapitalize="off"/>\n"""

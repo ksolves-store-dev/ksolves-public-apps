@@ -1,19 +1,7 @@
-.container{
-    max-width:30%;
+.ks_login_image_layout {
+    background-image: url("/web/login");
 }
-#background{
-    height:100%;
-    display: block;
-	background-repeat: no-repeat;
-	background-position: center center;
-	background-attachment: fixed;
-	-webkit-background-size: cover;
-	-moz-background-size: cover;
-	-o-background-size: cover;
-	background-size: cover;
-	-webkit-filter: blur(0px);
-	z-index: -1;
-}
+
 .body_login {
     display: inline-block;
     text-align: center;
