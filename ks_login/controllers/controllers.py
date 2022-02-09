@@ -7,6 +7,7 @@ from datetime import datetime
 import base64
 from odoo import http, _
 from odoo.addons.auth_signup.controllers.main import AuthSignupHome
+from odoo.addons.web.controllers.main import HomeStaticTemplateHelpers
 from odoo.addons.auth_signup.models.res_users import SignupError
 from odoo.exceptions import UserError
 from openerp.http import request, route
@@ -17,12 +18,16 @@ from werkzeug.utils import redirect
 
 class KsAuthSignupHome(AuthSignupHome):
 
+
+
     # @http.route('/web/login', type='http', auth="none")
     # def web_login(self, redirect=None, **kw):
     #     sup = super(KsAuthSignupHome, self).web_login(redirect=None, **kw)
     #     response = request.render('ks_login.login', sup.values)
     #     response.headers['X-Frame-Options'] = 'DENY'
     #     return response
+
+
 
     # this is for background image of login page
     @route(['/login_page/background'], type='http', auth="none")
@@ -61,6 +66,29 @@ class KsAuthSignupHome(AuthSignupHome):
         response.headers['X-Frame-Options'] = 'DENY'
         return response
 
+    def get_auth_signup_qcontext(self):
+        """ Shared helper returning the rendering context for signup and reset password """
+        SIGN_UP_REQUEST_PARAMS = {'db', 'login', 'debug', 'token', 'message', 'error', 'scope', 'mode',
+                                  'redirect', 'redirect_hostname', 'email', 'name', 'partner_id',
+                                  'password', 'confirm_password', 'city', 'activity_state', 'bank_account_count',
+                                  'comment', 'category_id', 'mobile', 'zip', 'active', 'country_id', 'lang'}
+
+        qcontext = {k: v for (k, v) in request.params.items() if k in SIGN_UP_REQUEST_PARAMS}
+        qcontext.update(self.get_auth_signup_config())
+        if not qcontext.get('token') and request.session.get('auth_signup_token'):
+            qcontext['token'] = request.session.get('auth_signup_token')
+        if qcontext.get('token'):
+            try:
+                # retrieve the user info (name, login or email) corresponding to a signup token
+                token_infos = request.env['res.partner'].sudo().signup_retrieve_info(qcontext.get('token'))
+                for k, v in token_infos.items():
+                    qcontext.setdefault(k, v)
+            except:
+                qcontext['error'] = _("Invalid signup token")
+                qcontext['invalid_token'] = True
+        return qcontext
+
+
 
 
     def do_signup(self, qcontext):
@@ -71,9 +99,9 @@ class KsAuthSignupHome(AuthSignupHome):
         valu_dict = {}
 
         for rec in record.ks_fields_ids:
-            field = ' ' + rec.ks_field_id.name + ' '
-            field_origin = rec.ks_field_id.name
-            ks_new.append(field_origin)
+            field = rec.ks_field_id.name.strip()
+            # field_origin = rec.ks_field_id.name
+            ks_new.append(field)
             if field in qcontext:
                 if qcontext[field]:
                     var = qcontext[field]
