@@ -15,6 +15,8 @@
     'images': ['static/description/Banner.png'],
     'category': 'Stock Management',
     'version': '0.1',
+    'currency': 'EUR',
+    'price': '0.0',
 
     # any module necessary for this one to work correctly
     'depends': ['base','stock'],
