@@ -1,1 +1,0 @@
-# ksolves-public-apps
