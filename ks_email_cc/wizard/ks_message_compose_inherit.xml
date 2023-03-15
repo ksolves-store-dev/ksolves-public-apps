@@ -8,7 +8,7 @@
             <xpath expr="//field[@name='reply_to']" position="replace">
                 <field name="reply_to" placeholder="Email address to redirect replies..."
                        attrs="{'invisible':['|', ('ks_reply_to_bcc_visibility', '=', False),('is_log','=', True)],
-                                    'required':[('no_auto_thread', '=', True), ('composition_mode', '=', 'mass_mail')]}"/>
+                                    'required':[('composition_mode', '=', 'mass_mail')]}"/>
             </xpath>
             <xpath expr="//field[@name='subject']" position="before">
                 <field name="ks_cc_partner_ids" widget="many2many_tags_email"

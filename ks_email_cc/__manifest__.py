@@ -29,11 +29,17 @@
     'data': [
         'wizard/ks_message_compose_inherit.xml',
         'views/ks_res_company_inherit.xml',
-        'views/ks_web_assets.xml'
+        # 'views/ks_web_assets.xml'
     ],
 
     'qweb': [
            'static/src/xml/ks_templates_inherit.xml',
     ],
+    "assets": {
+        "web.assets_backend": [
+            "static/src/js/ks_message_inherit.js"
+            "static/src/js/ks_thread_inherit.js"
+        ]
+    }
 
 }
