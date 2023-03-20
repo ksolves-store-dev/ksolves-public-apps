@@ -29,7 +29,6 @@
     'data': [
         'wizard/ks_message_compose_inherit.xml',
         'views/ks_res_company_inherit.xml',
-        # 'views/ks_web_assets.xml'
     ],
 
     'qweb': [
