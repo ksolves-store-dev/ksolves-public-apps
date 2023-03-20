@@ -16,7 +16,7 @@ class MailThreadInherit(models.AbstractModel):
          * performs the notification process by calling the various notification
            methods implemented;
 
-        This method cnn be overridden to intercept and postpone notification
+        This method can be overridden to intercept and postpone notification
         mechanism like mail.channel moderation.
 
         :param message: mail.message record to notify;
@@ -28,8 +28,25 @@ class MailThreadInherit(models.AbstractModel):
         methods. See those methods for more details about the additional parameters.
         Parameters used for email-style notifications
         """
+        # msg_vals = msg_vals if msg_vals else {}
+        # # rdata = self._notify_compute_recipients(message, msg_vals)
+        # rdata = self._notify_compute_recipients(message, msg_vals)
+        # if not rdata:
+        #     return False
+        # elif self.env.context.get('ks_from_button'):
+        #     # Added custom changes here to check that if this method is called from frontend then only send to those recipients if they are selected
+        #     rdata.update({'partners': [x for x in rdata.get('partners', []) if x['id'] in message.partner_ids.ids]})
+        #
+        # message_values = {}
+        # if rdata['channels']:
+        #     message_values['channel_ids'] = [(6, 0, [r['id'] for r in rdata['channels']])]
+        #
+        # self._notify_record_by_inbox(message, rdata, msg_vals=msg_vals, **kwargs)
+        # if notify_by_email:
+        #     self._notify_record_by_email(message, rdata, msg_vals=msg_vals, **kwargs)
+        #
+        # return rdata
         msg_vals = msg_vals if msg_vals else {}
-        # rdata = self._no  tify_compute_recipients(message, msg_vals)
         rdata = self._notify_compute_recipients(message, msg_vals)
         if not rdata:
             return False
@@ -38,7 +55,8 @@ class MailThreadInherit(models.AbstractModel):
             rdata.update({'partners': [x for x in rdata.get('partners', []) if x['id'] in message.partner_ids.ids]})
 
         message_values = {}
-        if rdata['channels']:
+        # if rdata['channels']:
+        if len(rdata) > 0 and isinstance(rdata[0], dict) and rdata[0].get('channels'):
             message_values['channel_ids'] = [(6, 0, [r['id'] for r in rdata['channels']])]
 
         self._notify_record_by_inbox(message, rdata, msg_vals=msg_vals, **kwargs)
@@ -62,7 +80,7 @@ class MailThreadInherit(models.AbstractModel):
             else:  # unknown partner, we are probably managing an email address
                 result[self.ids[0]].append((False, email, reason))
             return result
-        else:
+        # else:
             return res
 
     def _notify_record_by_email(self, message, recipients_data, msg_vals=False,
@@ -85,7 +103,10 @@ class MailThreadInherit(models.AbstractModel):
         :param send_after_commit: if force_send, tells whether to send emails after
           the transaction has been committed using a post-commit hook;
         """
-        partners_data = [r for r in recipients_data['partners'] if r['notif'] == 'email']
+        # partners_data = [r for r in recipients_data['partners'] if r['notif'] == 'email']
+        # if not partners_data:
+        #     return True
+        partners_data = [r for r in recipients_data if r.get('notif') == 'email']
         if not partners_data:
             return True
 
@@ -183,13 +204,13 @@ class MailThreadInherit(models.AbstractModel):
                             tocreate_recipient_ids = [rid for rid in recipient_ids if rid not in existing_notifications.mapped('res_partner_id.id')]
                             existing_notifications.write({
                                 'notification_status': 'ready',
-                                'mail_id': email.id,
+                                'mail_mail_id': email.id,
                             })
                     notif_create_values += [{
                         'mail_message_id': message.id,
                         'res_partner_id': recipient_id,
                         'notification_type': 'email',
-                        'mail_id': email.id,
+                        'mail_mail_id': email.id,
                         'is_read': True,  # discard Inbox notification
                         'notification_status': 'ready',
                     } for recipient_id in tocreate_recipient_ids]
@@ -229,6 +250,8 @@ class MailMessageInherit(models.Model):
     email_cc = fields.Char('Email CC')
     email_bcc = fields.Char('Email BCC')
     email_to = fields.Char('To')
+    channel_ids = fields.Many2many('mail.channel')
+    moderation_status = fields.Char('mail.message')
     ks_email_cc_string = fields.Char('Cc String', help='Used to store only cc mails that can be shown in chatter')
     ks_email_bcc_string = fields.Char('Bcc String', help='Used to store only bcc mails that can be shown in chatter')
     ks_cc_partners = fields.Char('cc partners string')

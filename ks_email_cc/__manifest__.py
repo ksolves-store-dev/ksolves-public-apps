@@ -16,7 +16,7 @@
     'currency': 'USD',
     'price': 0.0,
     # "live_test_url":  "http://saastoolkit.kappso.in/",
-    'version': '14.0.1.0.1',
+    'version': '15.0.1.0.0',
     'maintainer': 'Ksolves India Ltd.',
     'support': 'sales@ksolves.com',
     'installable': True,
@@ -29,11 +29,17 @@
     'data': [
         'wizard/ks_message_compose_inherit.xml',
         'views/ks_res_company_inherit.xml',
-        'views/ks_web_assets.xml'
+        # 'views/ks_web_assets.xml'
     ],
 
     'qweb': [
            'static/src/xml/ks_templates_inherit.xml',
     ],
+    "assets": {
+        "web.assets_backend": [
+            "static/src/js/ks_message_inherit.js"
+            "static/src/js/ks_thread_inherit.js"
+        ]
+    }
 
 }
