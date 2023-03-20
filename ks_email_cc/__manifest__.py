@@ -37,8 +37,8 @@
     ],
     "assets": {
         "web.assets_backend": [
-            "static/src/js/ks_message_inherit.js"
-            "static/src/js/ks_thread_inherit.js"
+            "ks_email_cc/static/src/js/ks_message_inherit.js",
+            "ks_email_cc/static/src/js/ks_thread_inherit.js"
         ]
     }
 

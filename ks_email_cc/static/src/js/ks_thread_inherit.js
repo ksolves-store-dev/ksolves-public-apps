@@ -1,12 +1,6 @@
-odoo.define('ks_email_cc/static/src/js/thread_inherit.js', function (require) {
-'use strict';
+/** @odoo-module **/
 
-
-
-const {
-    registerClassPatchModel,
-    registerInstancePatchModel,
-} = require('mail/static/src/model/model_core.js');
+import { registerClassPatchModel,registerInstancePatchModel } from '@mail/model/model_core';
 
 registerClassPatchModel('mail.thread', 'ks_email_cc/static/src/js/thread_inherit.js', {
    performRpcMessagePost({ postData, threadId, threadModel }) {
@@ -26,4 +20,4 @@ registerClassPatchModel('mail.thread', 'ks_email_cc/static/src/js/thread_inherit
         });
     }
 });
-});
+
